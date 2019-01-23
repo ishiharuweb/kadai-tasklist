@@ -32,7 +32,7 @@ class TasksController < ApplicationController
   
     if @task.update(task_params)
       flash[:success] = 'Task は正常に更新されました'
-      redirect_to @task
+      redirect_to task_url(@task)
     else
       flash.now[:danger] = 'Task は更新されませんでした'
       render :edit
@@ -49,8 +49,8 @@ class TasksController < ApplicationController
   
   private
 
-　# Strong Parameter
-　def task_params
-  　params.require(:task).permit(:content)
-　end
+  # Strong Parameter
+  def task_params
+    params.require(:task).permit(:content)
+  end
 end
