@@ -1,21 +1,25 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
   before_action :set_task, only: [:show, :edit, :update, :destroy]
-  before_action :correct_user, only: [:destroy]
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
   
   def index
-    @tasks = Task.all.page(params[:page]).per(10)
+    # @tasks = Task.all.page(params[:page]).per(10)
+    # 下記で現在のユーザーが所持しているタスク一覧が取れる
+    @tasks = current_user.tasks.page(params[:page]).per(10)
   end
 
   def show
   end
 
   def new
-    @task = Task.new
+    # @task = Task.new
+    # 現在のユーザーに紐付いた空のタスクインスタンスが作られる
+    @task = current_user.tasks.build
   end
 
   def create
-    @task = Task.new(task_params)
+    @task = current_user.tasks.build(task_params)
   
     if @task.save
       flash[:success] = 'Task が正常に投稿されました'
@@ -59,6 +63,9 @@ class TasksController < ApplicationController
   
   def correct_user
     @task = current_user.tasks.find_by(id: params[:id])
+    # if @task.user != current_user
+    #   redirect_to root_url
+    # end
     unless @task
       redirect_to root_url
     end
